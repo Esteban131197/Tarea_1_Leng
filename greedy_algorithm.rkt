@@ -7,8 +7,8 @@
           (vector 0 0 0 0 0 0 0)  ; 1
           (vector 0 0 0 0 0 0 0)  ; 2
           (vector 0 0 0 0 0 0 0)  ; 3
-          (vector 2 0 1 0 0 0 0)  ; 4
-          (vector 1 0 1 0 0 0 0)  ; 5
+          (vector 2 0 1 0 0 2 0)  ; 4
+          (vector 1 0 1 0 0 2 2)  ; 5
           (vector 1 2 1 0 0 2 2))); 6
 
 ; 2D vector
@@ -41,7 +41,7 @@
 ; Get the value of a certain position
 (define (ga_pos-value vec r c)
   (cond
-    [(zero? (2d-vector-ref vec r c)) 0.25]   ; Empty position
+    [(zero? (2d-vector-ref vec r c)) 0.1]   ; Empty position
     [(equal? 1 (2d-vector-ref vec r c)) 0]   ; Rival position
     [(equal? 2 (2d-vector-ref vec r c)) 1])) ; Own position
 
@@ -72,12 +72,12 @@
 (define (ga_get-player p vec r c)
   (cond
     [(>= r (vector-length vec)) '()]
-    [(>= c (vector-length (vector-ref vec 0))) (ga_get-2 vec (+ r 1) 0)]
-    [(equal? p (2d-vector-ref vec r c)) (append (list (list r c)) (ga_get-2 vec r (+ c 1)))]
+    [(>= c (vector-length (vector-ref vec 0))) (ga_get-player p vec (+ r 1) 0)]
+    [(equal? p (2d-vector-ref vec r c)) (append (list (list r c)) (ga_get-player p vec r (+ c 1)))]
     [else (ga_get-player p vec r (+ c 1))]))
 
 ; Checks a position and determinates if filling that position gives a solution
-(define (ga-solution? vec r c lst)
+(define (ga_solution? vec r c lst)
   (cond
     [(or
       ; Horizontal
@@ -102,3 +102,24 @@
       (equal? 3 (ga_dir-value vec r c (list 1 -1) 1 0)))
      #t]
     [else #f]))
+
+; Get a position that would result in a solution for the given player
+(define (ga_player-solution vec p c)
+  (cond
+    [(empty? c) '()]
+    [(ga_solution? vec (car (car c)) (cadr (car c)) (ga_get-player p vec (car (car c)) (cadr (car c)))) (car c)]
+    [else (ga_player-solution vec p (cdr c))]))
+
+; Pick the position with the highest value
+(define (ga_top-pos vec queue current)
+  (cond
+    [(empty? queue) current]
+    [(> (ga_total-value vec (car (car queue)) (cadr (car queue))) (ga_total-value vec (car current) (cadr current))) (ga_top-pos vec (cdr queue) (car queue))]
+    [else (ga_top-pos vec (cdr queue) current)]))
+
+; Choose the best position to get a positive solution
+(define (ga_choose vec)
+  (cond
+    [(not (empty? (ga_player-solution vec 2 (ga_get-C vec 0 0)))) (ga_player-solution vec 2 (ga_get-C vec 0 0))]
+    [(not (empty? (ga_player-solution vec 1 (ga_get-C vec 0 0)))) (ga_player-solution vec 1 (ga_get-C vec 0 0))]
+    [else (ga_top-pos vec (cdr (ga_get-C vec 0 0)) (car (ga_get-C vec 0 0)))]))
