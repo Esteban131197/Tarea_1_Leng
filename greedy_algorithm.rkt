@@ -3,18 +3,23 @@
 ; Test matrix
 (define (test-matrix)
   ;               0 1 2 3 4 5 6 7
-  (vector (vector 0 0 0 0 0 0 0 0)  ; 0
+  (vector (vector 1 1 1 1 1 1 1 1)  ; 0
           (vector 0 0 0 0 0 0 0 0)  ; 1
           (vector 0 0 0 0 0 0 0 0)  ; 2
           (vector 0 0 0 0 0 0 0 0)  ; 3
-          (vector 2 0 1 0 0 0 0 0)  ; 4
-          (vector 1 0 1 0 0 2 2 0)  ; 5
-          (vector 1 0 1 0 0 2 2 0)  ; 6
-          (vector 1 2 1 0 0 2 2 0))); 7
+          (vector 0 0 0 2 0 0 0 0)  ; 4
+          (vector 0 0 0 0 0 0 2 0)  ; 5
+          (vector 0 0 0 0 0 0 2 0)  ; 6
+          (vector 1 1 1 1 1 1 1 1))); 7
 
 ; 2D vector
 (define (2d-vector-ref vec r c)
   (vector-ref (vector-ref vec r) c))
+
+; Add element to the bottom of a column
+(define (add-player vec pos p)
+  (vector-set! (vector-ref vec (car pos)) (cadr pos) p)
+  vec)
 
 ; Check if an element is in a list
 (define (member? lst elemt)
@@ -124,3 +129,5 @@
     [(not (empty? (ga_player-solution vec 2 (ga_get-C vec 0 0)))) (ga_player-solution vec 2 (ga_get-C vec 0 0))]
     [(not (empty? (ga_player-solution vec 1 (ga_get-C vec 0 0)))) (ga_player-solution vec 1 (ga_get-C vec 0 0))]
     [else (ga_top-pos vec (cdr (ga_get-C vec 0 0)) (car (ga_get-C vec 0 0)))]))
+
+(provide (all-defined-out))
