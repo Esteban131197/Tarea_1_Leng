@@ -15,23 +15,22 @@
     (begin
       (vector-set! v c val)
       (vector-set! vec r v))))
-;Matriz
+
 (define current-posn (make-2d-vector 6 7 #f))
 
 (define total-moves 0)
-
 ; Make a 800 x 650 frame
 (define frame (new frame%
                    [label "4INLINE"]
                    [width 800]
                    [height 650]))
 (define myframe (new frame% 
-                     [label "4IN"]
+                     [label "4INLINE"]
                      [width 400]
                      [height 200]))
 
 ;Imagen del tablero
-(define image (read-bitmap "descarga.png"))
+(define image (read-bitmap "pr.jpg"))
 
 
 
@@ -146,7 +145,7 @@
   (define (h-lines n1)
     (if(= n1 5) (send dc draw-line (+ 200 (* 80 n1)) 80 (+ 200 (* 80 n1)) 560)
        
-       (begin (send dc draw-line (+ 100 (* 80 n1)) 80 (+ 200 (* 80 n1)) 560) (send dc draw-line 120 (+ 160 (* 80 n1)) 680 (+ 160 (* 80 n1))) (h-lines (add1 n1)))))
+       (begin (send dc draw-line (+ 200 (* 80 n1)) 80 (+ 200 (* 80 n1)) 560) (send dc draw-line 120 (+ 160 (* 80 n1)) 680 (+ 160 (* 80 n1))) (h-lines (add1 n1)))))
   (h-lines 0))
 
 
@@ -269,8 +268,6 @@
                
                [else #f])]
         [else #f]))
-
-
 (define (nav2 vic i j)
   (cond [(and (number? (vector-ref (vector-ref vic i) j))
               (number? (vector-ref (vector-ref vic (+ i 1)) j))
@@ -286,7 +283,6 @@
                   (vector-ref (vector-ref vic (+ i 3)) j) 0) 0]
               [else #f])]
         [else #f]))
-
 (define (nav3 vic i j)
   (cond [ (and (number? (vector-ref (vector-ref vic i) j))
                (number? (vector-ref (vector-ref vic (+ i 1)) (+ j 1)))
@@ -302,7 +298,6 @@
                      (vector-ref (vector-ref vic (+ i 3)) (+ j 3)) 0) 0]
                 [else #f])]
         [else #f]))
-
 (define (nav4 vic i j)
   (cond [ (and (number? (vector-ref (vector-ref vic i) j))
                (number? (vector-ref (vector-ref vic (- i 1)) (+ j 1)))
