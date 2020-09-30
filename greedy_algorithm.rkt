@@ -2,14 +2,15 @@
 
 ; Test matrix
 (define (test-matrix)
-  ;               0 1 2 3 4 5 6
-  (vector (vector 0 0 0 0 0 0 0)  ; 0
-          (vector 0 0 0 0 0 0 0)  ; 1
-          (vector 0 0 0 0 0 0 0)  ; 2
-          (vector 0 0 0 0 0 0 0)  ; 3
-          (vector 2 0 1 0 0 0 0)  ; 4
-          (vector 1 0 1 0 0 2 2)  ; 5
-          (vector 1 2 1 0 0 2 2))); 6
+  ;               0 1 2 3 4 5 6 7
+  (vector (vector 0 0 0 0 0 0 0 0)  ; 0
+          (vector 0 0 0 0 0 0 0 0)  ; 1
+          (vector 0 0 0 0 0 0 0 0)  ; 2
+          (vector 0 0 0 0 0 0 0 0)  ; 3
+          (vector 2 0 1 0 0 0 0 0)  ; 4
+          (vector 1 0 1 0 0 2 2 0)  ; 5
+          (vector 1 0 1 0 0 2 2 0)  ; 6
+          (vector 1 2 1 0 0 2 2 0))); 7
 
 ; 2D vector
 (define (2d-vector-ref vec r c)
