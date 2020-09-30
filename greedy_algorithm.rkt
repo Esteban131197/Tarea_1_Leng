@@ -7,7 +7,7 @@
           (vector 0 0 0 0 0 0 0)  ; 1
           (vector 0 0 0 0 0 0 0)  ; 2
           (vector 0 0 0 0 0 0 0)  ; 3
-          (vector 2 0 1 0 0 2 0)  ; 4
+          (vector 2 0 1 0 0 0 0)  ; 4
           (vector 1 0 1 0 0 2 2)  ; 5
           (vector 1 2 1 0 0 2 2))); 6
 
@@ -41,7 +41,7 @@
 ; Get the value of a certain position
 (define (ga_pos-value vec r c)
   (cond
-    [(zero? (2d-vector-ref vec r c)) 0.1]   ; Empty position
+    [(zero? (2d-vector-ref vec r c)) 0.1]    ; Empty position
     [(equal? 1 (2d-vector-ref vec r c)) 0]   ; Rival position
     [(equal? 2 (2d-vector-ref vec r c)) 1])) ; Own position
 
