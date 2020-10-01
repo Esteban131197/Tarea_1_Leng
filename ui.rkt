@@ -4,9 +4,36 @@
 (require "greedy_algorithm.rkt")
 (open-graphics)
 
+
+; Make a frame by instantiating the frame% class
+(define frame (new frame% [label "Menu"] [width 400] [height 200]))
+
 ; Window settings
-(define window (open-viewport "4Line" 1200 800))
-((draw-solid-rectangle window) (make-posn 0 0) 1200 800 "darkgray")
+(define window (open-viewport "4Line" 800 800))
+((draw-solid-rectangle window) (make-posn 0 0) 800 800 "darkgray")
+
+; Make a static text message in the frame
+(define msg (new message% [parent frame]
+                          [label "4 in LINE"] ))
+ 
+; Make a button in the frame
+(new button% [parent frame]
+             [label "PLAY"]
+             ; Callback procedure for a button click:
+             [callback (lambda (button event)
+                         (send frame show #f))])
+
+; Make a button in the frame
+(new button% [parent frame]
+             [label "EXIT"]
+             ; Callback procedure for a button click:
+             [callback (lambda (button event)
+                         (send frame show #f))])
+ 
+; Show the frame by calling its show method
+(send frame show #t)
+
+
 
 ; Draw the base of the board
 (define (draw-board s x y c)
