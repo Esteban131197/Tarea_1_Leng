@@ -1,9 +1,13 @@
 #lang racket/gui
 
+(require readline)
+
+; ========== DATA STRUCTURES ==========
+
 ; Test matrix
 (define (test-matrix)
   ;               0 1 2 3 4 5 6 7
-  (vector (vector 1 1 1 1 1 1 1 1)  ; 0
+  (vector (vector 1 1 1 1 1 1 1 0)  ; 0
           (vector 0 0 0 0 0 0 0 0)  ; 1
           (vector 0 0 0 0 0 0 0 0)  ; 2
           (vector 0 0 0 0 0 0 0 0)  ; 3
@@ -15,11 +19,6 @@
 ; 2D vector
 (define (2d-vector-ref vec r c)
   (vector-ref (vector-ref vec r) c))
-
-; Add element to the bottom of a column
-(define (add-player vec pos p)
-  (vector-set! (vector-ref vec (car pos)) (cadr pos) p)
-  vec)
 
 ; Check if an element is in a list
 (define (member? lst elemt)
@@ -35,6 +34,27 @@
     [(equal? r (- (vector-length vec) 1)) #t]
     [(not (zero? (2d-vector-ref vec (+ r 1) c))) #t]
     [else #f]))
+
+; Converts a 2d vector to a list
+(define (2d-vector->list vec r c l sl)
+  (cond
+    [(>= r (vector-length vec)) l]
+    [(>= c (vector-length (vector-ref vec 0))) (2d-vector->list vec (+ r 1) 0 (append l (list sl)) '())]
+    [else (2d-vector->list vec r (+ c 1) l (append sl (list (2d-vector-ref vec r c))))]))
+
+(define (list->2d-vector lst mat)
+  (cond
+    [(empty? lst) (list->vector mat)]
+    [else (list->2d-vector (cdr lst) (append mat (list (list->vector (car lst)))))]))
+
+; Add a value to the bottom of a column
+(define (add-to-column vec r c p)
+  (cond
+    [(is-bottom? vec r c)
+       (list->2d-vector (list-set (2d-vector->list vec 0 0 '() '()) r (list-set (list-ref (2d-vector->list vec 0 0 '() '()) r) c p)) '())]
+    [else (add-to-column vec (+ r 1) c p)]))
+
+; ========== GREEDY ALGORITHM ==========
 
 ; Get the list of possible positions to play
 (define (ga_get-C vec r c)
@@ -74,7 +94,7 @@
      (ga_dir-value vec r c (list 1 -1) 1 0)
      (ga_dir-value vec r c (list -1 1) 1 0)))
 
-; Get all positions with a 2
+; Get all positions with the value of 2
 (define (ga_get-player p vec r c)
   (cond
     [(>= r (vector-length vec)) '()]
@@ -130,4 +150,36 @@
     [(not (empty? (ga_player-solution vec 1 (ga_get-C vec 0 0)))) (ga_player-solution vec 1 (ga_get-C vec 0 0))]
     [else (ga_top-pos vec (cdr (ga_get-C vec 0 0)) (car (ga_get-C vec 0 0)))]))
 
+; ========== GAME ==========
+
+(define (show-m vec r)
+  (cond
+    [(>= r (vector-length vec)) (void)]
+    [else (display (vector-ref vec r))
+          (display "\n")
+          (show-m vec (+ r 1))]))
+
+(define (winner? vec)
+  #f
+  )
+
+(define (start-game vec t)
+  (cond
+    [(winner? vec) (display "Game over...\n")]
+    [(odd? (remainder t 2))
+        (show-m vec 0)
+        (display "Choose the column you want to play...\n")
+        (define input (string->number (read-line (current-input-port) 'any)))
+        (start-game (add-to-column vec 0 input 1) (+ t 1))]
+    [else
+        (start-game (add-to-column vec 0 (cadr (ga_choose vec)) 2) (+ t 1))]))
+
+(define (set-game)
+  (display "4Line\nPlease write the size of the board from 8 to 16...  ")
+  (define input (string->number (read-line (current-input-port) 'any)))
+  (if (and (>= input 8) (<= input 16))
+      (start-game (make-vector input [make-vector input]) 1)
+      (set-game)))
+
+; Used to share this functions with the UI file
 (provide (all-defined-out))

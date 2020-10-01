@@ -18,7 +18,7 @@
             ((draw-ellipse window)(make-posn x y) 50 50 "blue")
             (draw-board s (+ x 50) y c)))))
 ; Call the function
-(draw-board 16 50 50 0)
+(draw-board 10 50 50 0)
 
 ; Draw circles for the board
 (define (draw-game vec r c)
