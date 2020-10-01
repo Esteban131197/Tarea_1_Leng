@@ -1,20 +1,33 @@
 #lang racket/gui
 
+; Instituto Tecnológico de Costa Rica
+; Área Académica de Ingeniería en Computadores
+; 
+; Curso: CE3104 - Lenguajes, compiladores e intérpretes
+; Grupo: 02
+; Profesor: Marco Rivera Meneses
+;
+; Tarea #1: 4Line (with Greedy Algorithm)
+;
+; Programadores:  Víctor Ignacio Castrillo Muñoz - 2017110244 (Greedy Algorithm)
+;                 Brayan Manuel Solano Fonseca
+;                 Esteban Adolfo Morales Ureña
+
 (require readline)
 
 ; ========== DATA STRUCTURES ==========
 
-; Test matrix
+; A defined matrix for development testing
 (define (test-matrix)
   ;               0 1 2 3 4 5 6 7
-  (vector (vector 1 1 1 1 1 1 1 0)  ; 0
+  (vector (vector 0 0 0 0 0 0 0 0)  ; 0
           (vector 0 0 0 0 0 0 0 0)  ; 1
           (vector 0 0 0 0 0 0 0 0)  ; 2
           (vector 0 0 0 0 0 0 0 0)  ; 3
-          (vector 0 0 0 2 0 0 0 0)  ; 4
+          (vector 0 0 0 0 0 0 0 0)  ; 4
           (vector 0 0 0 0 0 0 2 0)  ; 5
-          (vector 0 0 0 0 0 0 2 0)  ; 6
-          (vector 1 1 1 1 1 1 1 1))); 7
+          (vector 0 0 0 2 0 0 2 0)  ; 6
+          (vector 1 0 0 2 2 1 1 1))); 7
 
 ; 2D vector
 (define (2d-vector-ref vec r c)
@@ -42,6 +55,7 @@
     [(>= c (vector-length (vector-ref vec 0))) (2d-vector->list vec (+ r 1) 0 (append l (list sl)) '())]
     [else (2d-vector->list vec r (+ c 1) l (append sl (list (2d-vector-ref vec r c))))]))
 
+; Converts a list to a 2d vector
 (define (list->2d-vector lst mat)
   (cond
     [(empty? lst) (list->vector mat)]
@@ -152,6 +166,7 @@
 
 ; ========== GAME ==========
 
+; Display the board in the console
 (define (show-m vec r)
   (cond
     [(>= r (vector-length vec)) (void)]
@@ -159,10 +174,12 @@
           (display "\n")
           (show-m vec (+ r 1))]))
 
+; Winning condition
 (define (winner? vec)
   #f
   )
 
+; Gameloop
 (define (start-game vec t)
   (cond
     [(winner? vec) (display "Game over...\n")]
@@ -174,6 +191,7 @@
     [else
         (start-game (add-to-column vec 0 (cadr (ga_choose vec)) 2) (+ t 1))]))
 
+; Set a new game
 (define (set-game)
   (display "4Line\nPlease write the size of the board from 8 to 16...  ")
   (define input (string->number (read-line (current-input-port) 'any)))
